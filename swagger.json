@@ -1,0 +1,639 @@
+{
+    "openapi": "3.0.0",
+    "info":{
+        "title":"Inventory Control API",
+        "description":"An API to control product inventory, and manage categories.",
+        "termOfService":"http://localhost:9999/terms",
+        "contact": {
+            "email":"thiagofm.f12@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+
+    "paths": {
+        "/v1/user": {
+            "post": {
+                "description": "Create user",
+                "requestBody": {
+                    "description":"Necessary data to create an user.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/components/schemas/RequestCreateUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content":{
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseCreateUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/session": {
+            "post": {
+                "description": "Authenticate user and start logged session.",
+                "requestBody": {
+                    "description":"Necessary data to login",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/components/schemas/RequestAuthUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content":{
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseAuthUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user_id={user_id}": {
+            "get": {
+                "description":"Find an user by id",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name":"user_id",
+                        "in": "path",
+                        "description":"User id",
+                        "required": "true",
+                        "type": "string",
+                        "format":"uuid"
+                    }
+                ],
+                "responses":{
+                    "200": {
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "$ref":"#/components/schemas/ResponseCreateUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/remove/user_id={user_id}": {
+            "delete": {
+                "description": "Remove user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description":"User id",
+                        "required": "true",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseDeleteUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/v1/category": {
+            "post": {
+                "description": "Create new category",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "description":  "Necessary fields to create a new category",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RequestCreateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref":"#/components/schemas/ResponseCreateCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/category/{category_id}": {
+            "put": {
+                "description": "Edit a category",
+                "security":[
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description":"Category id",
+                        "required":"true",
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                ],
+                "requestBody": {
+                    "description":"Necessary data to edit a category",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":"#/components/schemas/RequestCreateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref":"#/components/schemas/ResponseCreateCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/category": {
+            "get": {
+                "description": "List all categories",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/ResponseGetAllCategories"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/category/{category_id}": {
+            "delete":{
+                "description": "Remove a category",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name":"category_id",
+                        "in":"path",
+                        "description":"Category id",
+                        "required":"true",
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref":"#/components/schemas/ResponseDeleteCategory"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/v1/product": {
+            "post":{
+                "description":"Create a new product",
+                "security": [
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "requestBody":{
+                    "description": "Necessary data to create a product.",
+                    "content": {
+                        "multipart/form-data":{
+                            "schema":{
+                                "$ref":"#/components/schemas/RequestCreateProduct"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/ResponseCreateProduct"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product/{product_id}": {
+            "put":{
+                "description": "Edit product by id",
+                "security":[
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "requestBody":{
+                    "description":"Datas necessary to edit a product",
+                    "content":{
+                        "multipart/form-data":{
+                            "schema":{
+                                "$ref":"#/components/schemas/RequestEditProduct"
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/ResponseDeleteUser"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product?category_id={category_id}": {
+            "get":{
+                "description":"Find a product by a category",
+                "security":[
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name": "category_id",
+                        "in":"path",
+                        "description":"Category id",
+                        "required":"true",
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/ResponseCreateProduct"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product/all":{
+            "get":{
+                "description":"Find all products",
+                "security":[
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/ResponseSaleProduct"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/product/{product_id}":{
+            "delete":{
+                "description":"Delete a product",
+                "security":[
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name":"product_id",
+                        "in":"path",
+                        "description":"Product ID",
+                        "required":"true",
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref":"#/components/schemas/RequestCreateProduct"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/v1/sale?product_id={product_id}":{
+            "put":{
+                "description":"Make a sale",
+                "security":[
+                    {
+                        "bearerAuth":[]
+                    }
+                ],
+                "parameters":[
+                    {
+                        "name": "product_id",
+                        "in":"path",
+                        "description":"Product ID",
+                        "required":"true",
+                        "type":"string",
+                        "format":"uuid"
+                    }
+                ],
+                "requestBody":{
+                    "description":"Fields necessary to buy",
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "$ref":"#/components/schemas/RequestSaleProduct"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas":  {
+            "RequestCreateUser": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ResponseCreateUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "RequestAuthUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ResponseAuthUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ResponseDeleteUser": {
+                "type": "object"
+            },
+            "RequestCreateCategory": {
+                "type":"object",
+                "properties":{
+                    "name":{
+                        "type":"string"
+                    }
+                }
+            },
+            "ResponseCreateCategory":{
+                "type":"object",
+                "properties":{
+                    "id":{
+                        "type":"string"
+                    },
+                    "name":{
+                        "type":"string"
+                    }
+                }
+            },
+            "ResponseGetAllCategories":{
+                "type":"array",
+                "properties":{
+                    "id":{
+                        "type": "string"
+                    },
+                    "name":{
+                        "type":"string"
+                    }
+                }
+            },
+            "ResponseDeleteCategory": {
+                "type": "object"
+            },
+            "RequestCreateProduct": {
+                "type":"object",
+                "properties": {
+                    "name": {
+                        "type":"string"
+                    },
+                    "price": {
+                        "type":"string"
+                    },
+                    "description": {
+                        "type":"string"
+                    },
+                    "file": {
+                        "type":"string",
+                        "format":"binary"
+                    },
+                    "amount": {
+                        "type":"number"
+                    },
+                    "category_id": {
+                        "type":"string"
+                    }
+                }
+            },
+            "ResponseCreateProduct": {
+                "type":"object",
+                "properties": {
+                    "id": {
+                        "type":"string"
+                    },
+                    "name": {
+                        "type":"string"
+                    },
+                    "price": {
+                        "type":"string"
+                    },
+                    "description": {
+                        "type":"string"
+                    },
+                    "banner": {
+                        "type":"string"
+                    },
+                    "amount": {
+                        "type":"number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type":"string"
+                    },
+                    "category_id": {
+                        "type":"string"
+                    }
+                }
+            },
+            "RequestEditProduct": {
+                "type":"object",
+                "properties": {
+                    "name": {
+                        "type":"string"
+                    },
+                    "price": {
+                        "type":"string"
+                    },
+                    "description": {
+                        "type":"string"
+                    },
+                    "file": {
+                        "type":"string",
+                        "format":"binary"
+                    },
+                    "amount": {
+                        "type":"number"
+                    },
+                    "category_id": {
+                        "type":"string"
+                    }
+                }
+            },
+            "ResponseSaleProduct":{
+                "type":"object",
+                "properties":{
+                    "id":{
+                        "type":"string"
+                    },
+                    "name":{
+                        "type":"string"
+                    },
+                    "amount":{
+                        "type":"number"
+                    }
+                }
+            },
+            "RequestSaleProduct":{
+                "type":"object",
+                "properties":{
+                    "amount":{
+                        "type":"number"
+                    }
+                }
+            }
+        },
+
+        "securitySchemes": {
+            "bearerAuth":{
+                "description":"Authentication using JWT",
+                "type": "http",
+                "scheme": "Bearer",
+                "BearerFormat": "JWT"
+            }
+        }
+    }
+}
